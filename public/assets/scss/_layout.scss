@@ -1,0 +1,13 @@
+.text-main{
+    color: $blue !important;
+}
+.btn-main{
+    background-color: $main;
+    color: #fff;
+    &:hover{
+        background-color: $secondary;
+    }
+}
+.bg-main{
+    background-color: $main;
+}

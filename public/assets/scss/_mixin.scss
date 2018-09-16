@@ -1,0 +1,19 @@
+@mixin btn-linear($width, $height){
+	background-image: -webkit-gradient(linear, left top, right top, from(#25aae1), color-stop(#4481eb), color-stop(#04befe), to(#3f86ed));
+	background-image: linear-gradient(to right, #25aae1, #4481eb, #04befe, #3f86ed);
+	border-radius: 0;
+	border:none;
+	color: #fff;
+	width: $width;
+	height: $height;
+	background-size: 300% 100%;
+	moz-transition: all .4s ease-in-out;
+	-webkit-transition: all .4s ease-in-out;
+	transition: all .4s ease-in-out;
+	&:hover{
+		background-position: 100% 0;
+		moz-transition: all .4s ease-in-out;
+		-webkit-transition: all .4s ease-in-out;
+		transition: all .4s ease-in-out;
+	}
+}

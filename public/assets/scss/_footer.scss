@@ -1,0 +1,57 @@
+div.footer{
+	background-color: $blue;
+	h5{
+		color: #fff;
+		text-transform: uppercase
+	}
+	ul{
+		li{
+			color: #fff;
+			font-family: 'Nunito', sans-serif;
+			a{
+				color: #fff !important;
+				&:hover{
+					color: #ddd !important;
+					text-decoration: none;
+				}
+			}
+		}
+	}
+}
+.tool{
+	position: fixed;
+	top: 40%;
+	right: 0;
+	z-index: 999;
+	ul{
+		padding: 0;
+		li{
+			background-color: $blue;
+			text-align: center;
+			margin-bottom: 3px;
+			-webkit-transition: 0.3s ease;
+			-moz-transition: 0.3s ease;
+			-ms-transition: 0.3s ease;
+			-o-transition: 0.3s ease;
+			transition: 0.3s ease;
+			&:hover{
+				background-color: $secondary;
+				-webkit-transform: scale(1.2);
+				-moz-transform: scale(1.2);
+				-ms-transform: scale(1.2);
+				-o-transform: scale(1.2);
+				transform: scale(1.2);
+			}
+			a{
+				color: #fff;
+				text-decoration: none;
+				display: block;
+				padding: 10px 12px;
+				box-shadow: 1px 2px 5px #333;
+				&:hover{
+					color: #fff;
+				}
+			}
+		}
+	}
+}
