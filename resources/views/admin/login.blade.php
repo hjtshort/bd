@@ -5,6 +5,7 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <title>Admin Login</title>
 
@@ -26,10 +27,10 @@
             </div>
             <h3>Admin Panel</h3>
             <form class="m-t" role="form" action="" method="post" enctype='multipart/form-data'>
-                    <input name="_token"  type="hidden" class="form-control" placeholder="Username"  value="{!! csrf_token() !!}" >
+                @csrf
                 <div class="form-group">
-                    <input name="username" type="text" class="form-control" placeholder="Username" >
-                    <label class="text-danger">{{ $errors->first('username') }}</label>
+                    <input name="email" type="text" class="form-control" placeholder="Email" >
+                    <label class="text-danger">{{ $errors->first('email') }}</label>
                 </div>
                 <div class="form-group">
                     <input name="password" type="password" class="form-control" placeholder="Password" >

@@ -13,10 +13,13 @@
 
 Route::get('/', function () {
     return \App\models\type::all();
-
     return view('module.index-content');
 });
-
 Route::group(['prefix'=>'admin','as'=>'admin'], function(){
     Route::get('login','AdminController@getLogin')->name('getLogin');
+    Route::post('login','AdminController@postLogin')->name('postLogin');
+    Route::group(['middleware' => ['auth']], function () {
+        Route::get('/','AdminController@index')->name('index');
+    });
+
 });
