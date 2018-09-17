@@ -16,3 +16,7 @@ Route::get('/', function () {
 
     return view('module.index-content');
 });
+
+Route::group(['prefix'=>'admin','as'=>'admin'], function(){
+    Route::get('login','AdminController@getLogin')->name('getLogin');
+});
