@@ -50,7 +50,7 @@
 
                                 <tr>
 
-                                    <td class="text-center"><input type="checkbox"  data-link="1"   class="i-checks" name="input[]" value="{{ $value->id}}"></td>
+                                    <td class="text-center"><input type="checkbox"  data-link="1"   class="i-checks" name="input[]" value=""></td>
                                     <td></td>
                                     <td>
                                         <div class="img">
@@ -142,7 +142,7 @@
                 {
                     $.ajax({
                         type: "post",
-                        url: "{{route('deletesp')}}",
+                        url: "",
                         data: {
                             "id":id,
                             '_token': token
@@ -172,7 +172,7 @@
                     {
                         $.ajax({
                             type: "post",
-                            url: "{{route('deletesp_all')}}",
+                            url: "",
                             data: {
                                 "id":id,
                                 '_token': token

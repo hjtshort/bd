@@ -39,9 +39,7 @@
                                         <div class="form-group">
                                             <label>Đơn vị tính</label>
                                             <select name="donvitinh" class="form-control">
-                                              @foreach($donvitinh as $value)
-                                              <option {{ (old("donvitinh") == $value->id ? "selected":"") }} value="{{$value->id}}">{{$value->donvitinh}}</option>
-                                              @endforeach
+
                                             </select>
                                         </div>
                                   </div>
@@ -93,11 +91,7 @@
                                         </div>
                                       <div class="form-group">
                                               <label>Chọn danh mục</label>
-                                              <select name="danhmuc" class="form-control">
-                                                @foreach($data as $val)
-                                                <option {{ (old("danhmuc") == $val->id ? "selected":"") }} value="{{$val->id}}">{{$val->tendanhmuc}}</option>
-                                                @endforeach
-                                              </select>
+
                                       </div>
                         </div>
                   </div>

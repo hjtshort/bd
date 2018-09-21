@@ -15,11 +15,31 @@ Route::get('/', function () {
     return \App\models\type::all();
     return view('module.index-content');
 });
-Route::group(['prefix'=>'admin','as'=>'admin'], function(){
-    Route::get('login','AdminController@getLogin')->name('getLogin');
-    Route::post('login','AdminController@postLogin')->name('postLogin');
-    Route::group(['middleware' => ['auth']], function () {
-        Route::get('/','AdminController@index')->name('index');
+Route::prefix('admin')->group(function () {
+    Route::get('login', 'AdminController@getLogin')->name('getLogin');
+    Route::post('login', 'AdminController@postLogin')->name('postLogin');
+
+    Route::group(['middleware' => ['LoginAdmin']], function () {
+        Route::get('logout', 'AdminController@logout')->name('logout');
+        Route::get('/', 'AdminController@index')->name('index');
+        Route::get('city', 'AdminController@city')->name('city');
+        Route::post('createCity', 'AdminController@createCity')->name('createCity');
+        Route::post('updateCity', 'AdminController@updateCity')->name('updateCity');
+        Route::post('deleteCity', 'AdminController@deleteCity')->name('deleteCity');
+        Route::get('district', 'AdminController@district')->name('district');
+        Route::post('createDistrict', 'AdminController@createDistrict')->name('createDistrict');
+        Route::post('updateDistrict', 'AdminController@updateDistrict')->name('updateDistrict');
+        Route::post('deleteDistrict', 'AdminController@deleteDistrict')->name('deleteDistrict');
+        Route::prefix('product')->group(function () {
+            Route::get('/','AdminController@product')->name('product');
+            Route::get('create','AdminController@getCreateProduct')->name('createProduct');
+            Route::post('getDistrict','AdminController@getDistrict')->name('getDistrict');
+            Route::post('create','AdminController@postCreateProduct')->name('postCreateProduct');
+            Route::get('image/{id}','AdminController@image')->name('image');
+            Route::post('image/{id}','AdminController@postCreateImage')->name('postCreateImage');
+            Route::post('deleteImage','AdminController@deleteImage')->name('deleteImage');
+        });
     });
 
 });
+

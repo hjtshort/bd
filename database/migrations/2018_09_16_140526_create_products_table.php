@@ -20,6 +20,8 @@ class CreateProductsTable extends Migration
             $table->string('product_alias');
             $table->integer('product_price');
             $table->float('product_acreage');
+            $table->text('product_info');
+            $table->text('product_img');
             $table->boolean('product_fast')->default(0);
             $table->boolean('product_status')->default(0);
             $table->unsignedInteger('type_id');
