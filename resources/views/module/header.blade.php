@@ -1,5 +1,5 @@
 <header class="sticky-navbar">
-    <div class="header py-0">
+    <div class="header header-first py-0">
         <div class="container">
             <div class="d-flex align-items-center justify-content-between">
                 <a class="header-brand d-lg-none" href="#">
@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-    <div class="header collapse d-lg-flex py-0 " id="headerMenuCollapse">
+    <div class="header header-second collapse d-lg-flex py-0 " id="headerMenuCollapse">
         <div class="container">
             <div class="row align-items-center">
                 <div id="mainMenu" class="col-lg order-lg-first">

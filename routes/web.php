@@ -12,8 +12,20 @@
 */
 
 Route::get('/', function () {
-    return \App\models\type::all();
+    // return \App\models\type::all();
     return view('module.index-content');
+});
+Route::get('/danhmuc', function () {
+    // return \App\models\type::all();
+    return view('module.danhmuc');
+});
+Route::get('/chitiet', function () {
+    // return \App\models\type::all();
+    return view('module.chitiet');
+});
+Route::get('/lienhe', function () {
+    // return \App\models\type::all();
+    return view('module.lienhe');
 });
 Route::prefix('admin')->group(function () {
     Route::get('login', 'AdminController@getLogin')->name('getLogin');

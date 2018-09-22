@@ -33,17 +33,17 @@
 </head>
 
 <body class="">
-<div class="page">
-    <!-- Header -->
-@include('module/header')
-<!-- end: Header -->
-    <!-- Content -->
-@yield('content')
-<!-- end: Content -->
-    <!-- Footer -->
-@include('module/footer')
-<!-- end: Footer -->
-</div>
+    <div class="page">
+        <!-- Header -->
+        @include('module/header')
+        <!-- end: Header -->
+        <!-- Content -->
+        @yield('content')
+        <!-- end: Content -->
+        <!-- Footer -->
+        @include('module/footer')
+        <!-- end: Footer -->
+    </div>
 </body>
 @yield('script')
 

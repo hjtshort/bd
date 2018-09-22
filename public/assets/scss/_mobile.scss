@@ -66,12 +66,23 @@
             }
         }
     }
+    .blog-item{
+        .blog-image{
+            width: 30%;
+        }
+        .blog-description{
+            width: 70%;
+        }
+    } 
 }
 @media screen and (max-width: 425px){
-    .grid-layout{
-        .blog-item:first-child{
-            grid-column-end: unset;
-            grid-row-end: unset;
+    .blog-item{
+        display: block;
+        .blog-image{
+            width: 100%;
+        }
+        .blog-description{
+            width: 100%;
         }
     }
     .tool{
