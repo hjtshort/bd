@@ -37,7 +37,7 @@ class CreateProduct extends FormRequest
             'product_address'=>'required',
             'product_status'=>'required',
             'direction_id'=>'required',
-            'image'=>'required|mimes:jpeg,bmp,png,jpg',
+
         ];
     }
 }

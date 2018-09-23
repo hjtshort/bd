@@ -13,4 +13,8 @@ class product extends Model
         'direction_id','user_id','created_at','updated_at'
     ];
     public $timestamps = true;
+    public function getDistrict()
+    {
+        return $this->belongsTo('App\models\district','district_id');
+    }
 }

@@ -49,15 +49,21 @@
 
             <!-- li -->
             <!-- li -->
-
-            <li @class="active">
-                <a href="#"><i class="fa fa-gift"></i> <span class="nav-label">Sản phẩm</span> <span
-                        class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li class="active"><a href="">Danh sách sản phẩm</a></li>
-                    <li class="active"><a href="">Danh mục sản phẩm</a></li>
-                </ul>
+            <li   @if(Request::segment(2)=='product')
+                  class='active'
+                    @endif
+            >
+                <a href="{{ route('product') }}"><i class="fa fa-gift"></i> <span class="nav-label">Sản phẩm</span></a>
             </li>
+
+            {{--<li @class="active">--}}
+                {{--<a href="#"><i class="fa fa-gift"></i> <span class="nav-label">Sản phẩm</span> <span--}}
+                        {{--class="fa arrow"></span></a>--}}
+                {{--<ul class="nav nav-second-level">--}}
+                    {{--<li class="active"><a href="">Danh sách sản phẩm</a></li>--}}
+                    {{--<li class="active"><a href="">Danh mục sản phẩm</a></li>--}}
+                {{--</ul>--}}
+            {{--</li>--}}
 
 
         </ul>

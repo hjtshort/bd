@@ -188,13 +188,6 @@ class AdminController extends Controller
 
     public function postCreateProduct(CreateProduct $request)
     {
-        if (!is_dir('upload')) {
-            mkdir('upload', 0777);
-        }
-        $file = $request->file('image');
-        $name = rand(11111, 99999) . '.' . $file->getClientOriginalExtension();
-        $file->move('upload', $name);
-        $img = array($name);
 
 
         try {
@@ -213,7 +206,6 @@ class AdminController extends Controller
                 'product_status' => $request->product_status,
                 'direction_id' => $request->direction_id,
                 'product_address' => $request->product_address,
-                'product_img' => json_encode($img),
                 'user_id' => Auth::user()->id,
             ]);
             return redirect()->route('product');
@@ -231,8 +223,13 @@ class AdminController extends Controller
     public function image($id)
     {
         $value = product::find($id)->product_img;
-        $data['image'] = json_decode($value);
+        $data['image'] = array();
         $data['id'] = $id;
+        if ($value != '') {
+            $data['image'] = json_decode($value);
+
+        }
+
         return view('admin.component.product-image', $data);
     }
 
@@ -242,7 +239,7 @@ class AdminController extends Controller
             mkdir('upload', 0777);
         }
         $file = $request->file('image');
-        $name = rand(11111, 99999) . '.' . $file->getClientOriginalExtension();
+        $name = rand(11111, 99999) . '.' . $file->getClientOriginalName();
         $file->move('upload', $name);
         $up = product::find($id);
         $image = json_decode($up->product_img);
@@ -280,5 +277,60 @@ class AdminController extends Controller
         return 'success';
     }
 
+    public function editProduct($id)
+    {
+        $data['info'] = product::find($id)->with('getDistrict')->first();
+        $data['city'] = city::all();
+        $data['property'] = property::all();
+        $data['type'] = type::all();
+        $data['direction'] = direction::all();
+        $data['district'] = district::where('city_id', $data['info']->getDistrict->city_id)->get();
+//        return $data['district'];
+        return view('admin.component.edit-product', $data);
+    }
 
+    public function postEditProduct(CreateProduct $request, $id)
+    {
+        try {
+            product::find($id)->update([
+                'product_title' => $request->product_title,
+                'product_alias' => $request->product_alias,
+                'city_id' => $request->city_id,
+                'district_id' => $request->district_id,
+                'type_id' => $request->type_id,
+                'property_id' => $request->property_id,
+                'product_info' => $request->product_info,
+                'product_acreage' => $request->product_acreage,
+                'product_price' => $request->product_price,
+                'product_fast' => $request->product_fast,
+                'product_status' => $request->product_status,
+                'direction_id' => $request->direction_id,
+                'product_address' => $request->product_address,
+                'user_id' => Auth::user()->id,
+            ]);
+            return redirect()->route('product')->with(['message' => 'Success!']);
+
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return redirect()->back();
+        }
+    }
+
+    public function deleteProduct(Request $request)
+    {
+        try {
+            $image = json_decode(product::find($request->id)->product_img);
+            if($image!=''){
+                foreach ($image as $key => $val) {
+                    if (file_exists('upload/' . $val)) {
+                        unlink('upload/' . $val);
+                    }
+
+                }
+             }
+            product::find($request->id)->delete();
+            echo 'ok';
+        } catch (\Illuminate\Database\QueryException $ex) {
+            echo 'error';
+        }
+    }
 }

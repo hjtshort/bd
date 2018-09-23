@@ -70,19 +70,20 @@
                                     <div class="ibox-content">
                                         <div class="row">
                                             @forelse($image as $key=>$value)
-                                                <div class="col-lg-4">
+                                                <div class="col-md-4">
                                                     <div class="panel panel-default">
-                                                        <div class="panel-heading">
+                                                        <div class="panel-heading text-right">
                                                             <button onclick="del_img({{ $id }},'{{ $value }}')" class="btn btn-danger">x</button>
                                                         </div>
                                                         <div class="panel-body">
-                                                            <img width="350" src="{{ asset('/upload/'.$value) }}"
+                                                            <img style="width: 100%" src="{{ asset('/upload/'.$value) }}"
                                                                  alt="">
                                                         </div>
 
                                                     </div>
                                                 </div>
                                             @empty
+                                                <h1>Chưa có ảnh</h1>
                                             @endforelse
 
                                         </div>

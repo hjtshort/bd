@@ -20,19 +20,19 @@
                                     <input hidden type="text" name="_token" value="{!! csrf_token() !!}">
                                     <div class="form-group">
                                         <label>Tiêu đề</label>
-                                        <input type="text" name="product_title" value="{{old('product_title')}}"
+                                        <input type="text" name="product_title" value="{{ $info->product_title }}"
                                                placeholder="Nhập tiêu đề" class="form-control">
                                         <p class="text-danger">{{ $errors->first('product_title') }}</p>
                                     </div>
                                     <div class="form-group">
                                         <label>Alias</label>
-                                        <input type="text" name="product_alias" value="{{old('product_alias')}}"
+                                        <input type="text" name="product_alias" value="{{ $info->product_alias }}"
                                                placeholder="Nhập alias" class="form-control">
                                         <p class="text-danger">{{ $errors->first('product_alias') }}</p>
                                     </div>
                                     <div class="form-group">
                                         <label>Địa chỉ</label>
-                                        <input type="text" name="product_address" value="{{old('product_address')}}"
+                                        <input type="text" name="product_address" value="{{ $info->product_address }}"
                                                placeholder="Nhập alias" class="form-control">
                                         <p class="text-danger">{{ $errors->first('product_address') }}</p>
                                     </div>
@@ -42,7 +42,7 @@
                                                 <label>Thành phố</label>
                                                 <select name="city_id" class="form-control" id="city_id">
                                                     @forelse($city as $key=>$val)
-                                                        <option {{ (old("city_id") == $val->id ? "selected":"") }} value="{{ $val->id }}">{{ $val->city_name }}</option>
+                                                        <option {{ ($info->getDistrict->city_id == $val->id ? "selected":"") }} value="{{ $val->id }}">{{ $val->city_name }}</option>
                                                     @empty
                                                         <option value="">Không có dữ liệu</option>
                                                     @endforelse
@@ -51,7 +51,10 @@
                                             <div class="col-sm-6">
                                                 <label>Quận/huyện</label>
                                                 <select name="district_id" class="form-control" id="district_id">
-                                                    <option value="">aa</option>
+                                                    @forelse($district as $key => $val)
+                                                        <option {{ $info->getDistrict->id==$val->id? 'selected':'' }} value="{{ $val->id }}">{{ $val->district_name }}</option>
+                                                        @empty
+                                                        @endforelse
                                                 </select>
                                             </div>
                                         </div>
@@ -63,7 +66,7 @@
                                                 <label for="">Loại</label>
                                                 <select name="type_id" class="form-control" id="type_id">
                                                     @forelse($type as $key=>$val)
-                                                        <option {{ (old("type_id") == $val->id ? "selected":"") }} value="{{ $val->id }}">{{ $val->type_name }}</option>
+                                                        <option {{ ($info->type_id == $val->id ? "selected":"") }} value="{{ $val->id }}">{{ $val->type_name }}</option>
                                                     @empty
                                                         <option value="">Không có dữ liệu</option>
                                                     @endforelse
@@ -73,7 +76,7 @@
                                                 <label for="">Bất động sản</label>
                                                 <select name="property_id" class="form-control" id="property_id">
                                                     @forelse($property as $key => $val)
-                                                        <option {{ (old("property_id") == $val->id ? "selected":"") }} value="{{ $val->id }}">{{ $val->property_name }}</option>
+                                                        <option {{ ($info->property_id == $val->id ? "selected":"") }} value="{{ $val->id }}">{{ $val->property_name }}</option>
                                                     @empty
                                                         <option value="">Không có dữ liệu</option>
                                                     @endforelse
@@ -86,7 +89,7 @@
                                         <label>Nội dung</label>
                                         <div>
                                             <textarea name="product_info" id="editor1" cols="80"
-                                                      rows="10">{{old('product_info')}}</textarea>
+                                                      rows="10">{{ $info->product_info }}</textarea>
                                             <script>
                                                 CKEDITOR.replace('editor1');
                                             </script>
@@ -98,7 +101,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Diện tích</label>
-                                    <input type="number" value="{{ old('product_acreage') }}" name="product_acreage" class="form-control" step="0.01">
+                                    <input type="number" name="product_acreage" value="{{ $info->product_acreage }}" class="form-control" step="0.01">
                                     <p class="text-danger">{{ $errors->first('product_acreage') }}</p>
                                 </div>
                             </div>
@@ -107,8 +110,8 @@
                                     <label>Giá bán</label>
                                     <div class="input-group m-b">
                                         <input name="product_price" type="number"
-                                                                        value="{{old('product_price')}}"
-                                                                        class="form-control"> <span
+                                               value="{{ $info->product_price }}"
+                                               class="form-control"> <span
                                                 class="input-group-addon">đ</span></div>
                                     <p class="text-danger">{{ $errors->first('product_price') }}</p>
                                 </div>
@@ -131,16 +134,16 @@
                         <div class="form-group">
                             <label>Gấp</label>
                             <select name="product_fast" class="form-control">
-                                <option {{ (old("product_fast") == 1 ? "selected":"") }} value="1">Có</option>
-                                <option {{ (old("product_fast") == 0 ? "selected":"") }} value="0">Không
+                                <option {{ ($info->product_fast == 1 ? "selected":"") }} value="1">Có</option>
+                                <option {{ ($info->product_fast == 0 ? "selected":"") }} value="0">Không
                                 </option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Hiển thị</label>
                             <select name="product_status" class="form-control">
-                                <option {{ (old("product_status") == 1 ? "selected":"") }} value="1">Có</option>
-                                <option {{ (old("product_status") == 0 ? "selected":"") }} value="0">Không
+                                <option {{ ($info->product_status == 1 ? "selected":"") }} value="1">Có</option>
+                                <option {{ ($info->product_status == 0 ? "selected":"") }} value="0">Không
                                 </option>
                             </select>
                         </div>
@@ -160,7 +163,7 @@
                             <label>Hướng</label>
                             <select name="direction_id" class="form-control" id="direction_id">
                                 @forelse($direction as $key => $val)
-                                    <option {{ (old("direction_id") == $val->id ? "selected":"") }} value="{{ $val->id }}">{{ $val->direction_name }}</option>
+                                    <option {{ ($info->direction_id == $val->id ? "selected":"") }} value="{{ $val->id }}">{{ $val->direction_name }}</option>
                                 @empty
                                     <option value="">Không có dữ liệu</option>
                                 @endforelse
@@ -172,7 +175,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="save">
                     <button type="submit" class="btn btn-primary" style="width: 100%">Lưu <i class="fa fa-check"></i>
                     </button>
@@ -183,7 +185,7 @@
     </div>
     <script>
         $(document).ready(function () {
-            getDistrict()
+            // getDistrict()
         });
         $('#city_id').change(function () {
             getDistrict()

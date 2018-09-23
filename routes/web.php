@@ -50,6 +50,9 @@ Route::prefix('admin')->group(function () {
             Route::get('image/{id}','AdminController@image')->name('image');
             Route::post('image/{id}','AdminController@postCreateImage')->name('postCreateImage');
             Route::post('deleteImage','AdminController@deleteImage')->name('deleteImage');
+            Route::get('edit/{id}','AdminController@editProduct')->name('editProduct');
+            Route::post('edit/{id}','AdminController@postEditProduct')->name('postEditProduct');
+            Route::post('delete','AdminController@deleteProduct')->name('deleteProduct');
         });
     });
 
