@@ -19,18 +19,23 @@ class AdminSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('users')->insert(
-            [
-                'name' => 'Ngô Minh Thư',
-                'email' => 'ngominhthu1611@gmail.com',
-                'password' => bcrypt('1611')
-            ]
-        );
+//        DB::table('users')->insert(
+//            [
+//                'name' => 'Ngô Minh Thư',
+//                'email' => 'ngominhthu1611@gmail.com',
+//                'password' => bcrypt('1611')
+//            ]
+//        );
         DB::table('users')->insert(
             [
                 'name' => 'Thuận Béo',
                 'email' => 'hjtshort@gmail.com',
-                'password' => bcrypt('321136263')
+                'password' => bcrypt('321136263'),
+                'sex'=>1,
+                'avatar'=>'thuan.jpg',
+                'phone'=>'01692780767',
+                'address'=>'Cần Thơ',
+                'isAdmin'=>1,
             ]
         );
         DB::table('property')->insert(

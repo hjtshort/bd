@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateImage;
 use App\Http\Requests\CreateProduct;
 use App\models\direction;
+use App\models\roles;
+use App\models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminRequest;
+use App\Http\Requests\CreateUserRequest;
 use Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\models\city;
 use App\models\district;
@@ -15,20 +19,23 @@ use App\models\property;
 use App\models\type;
 use App\models\product;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
+use PhpParser\Node\Stmt\TryCatch;
 
 class AdminController extends Controller
 {
     public function getLogin()
     {
+
         return view('admin.login');
     }
 
     public function postLogin(AdminRequest $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password],false)) {
             return redirect()->route('index');
         } else
-            return redirect()->back()->with(['mess_error' => 'Đăng nhập thất bại!']);
+            return redirect()->back()->with(['mess_error' => 'Email hoặc mật khẩu không đúng!']);
     }
 
     public function logout()
@@ -39,18 +46,15 @@ class AdminController extends Controller
 
     public function index()
     {
-        return Auth::user();
+
+        $data['user'] = User::where('isAdmin', 0)->get();
+        return view('admin.component.dashboard', $data);
     }
 
-    public function city(Request $request)
+    public function city()
     {
-        if ($request->search && $request->search != '') {
-            $data['city'] = city::where('city_name', 'like', '%' . $request->search . '%')->paginate(20)
-                ->withPath('?search=' . $request->search);
-        } else {
-            $data['city'] = city::paginate(20);
-        }
-        return view('admin.component.city', $data);
+
+        return view('admin.component.city');
     }
 
     public function createCity(Request $request)
@@ -65,9 +69,9 @@ class AdminController extends Controller
         } else {
             try {
                 city::create($request->only('city_name', 'city_alias'));
-                echo 'success';
+                return Response()->json(['message' => "Đã thêm {$request->city_name}", 'status' => true]);
             } catch (\Illuminate\Database\QueryException $e) {
-                echo 'error';
+                return Response()->json(['message' => "Thêm thất bại vui lòng thử lại sau", 'status' => false]);
             }
 
         }
@@ -78,20 +82,20 @@ class AdminController extends Controller
         $info = city::find($request->id);
 
         $valid = Validator::make($request->all(), [
-            'city_name' => 'required',
+            'city_name' => 'required|unique:city,city.city_name,' . $request->id,
             'city_alias' => 'required'
         ]);
         if ($valid->fails()) {
-            return $valid->errors()->first();
+            return response()->json(['message' => $valid->errors()->first(), 'valid' => false, 'status' => false]);
         } else {
             try {
                 $info->update([
                     'city_name' => $request->city_name,
                     'city_alias' => $request->city_alias
                 ]);
-                echo 'success';
+                return response()->json(['message' => 'Đã cập nhật', 'valid' => true, 'status' => true]);
             } catch (\Illuminate\Database\QueryException $e) {
-                echo 'error';
+                return response()->json(['message' => 'Cập nhật thất bại. Vui lòng thử vậy sau', 'valid' => true, 'status' => false]);
             }
         }
 
@@ -101,10 +105,15 @@ class AdminController extends Controller
     {
         try {
             city::find($request->id)->delete();
-            echo 'success';
+            return Response()->json(['message' => 'Đã xóa!', 'status' => true]);
         } catch (\Illuminate\Database\QueryException $e) {
-            echo 'error';
+            return Response()->json(['message' => 'Xóa thất bại vui lòng thử lại', 'status' => false]);
         }
+    }
+
+    public function getInfoCity(Request $request)
+    {
+        return City::findOrFail($request->id);
     }
 
     public function district(Request $request)
@@ -148,23 +157,24 @@ class AdminController extends Controller
             'district_name' => 'required'
         ]);
         if ($valid->fails()) {
-            return $valid->errors()->first();
+            return response()->json(['message' => $valid->errors()->first(), 'status' => false]);
         }
         try {
             district::find($request->id)->update([
                 'city_id' => $request->city_id,
                 'district_name' => $request->district_name
             ]);
-            echo 'success';
+            return response()->json(['message' => 'Đã chỉnh sửa', 'valid' => true, 'status' => true]);
         } catch (\Illuminate\Database\QueryException $ex) {
-            echo 'error';
+            return response()->json(['message' => 'Chỉnh sửa thất bại vui lòng thử lại sau', 'valid' => true, 'status' => false]);
         }
     }
 
     public function deleteDistrict(Request $request)
     {
+
         try {
-            district::find($request->id)->delete();
+            district::findOrFail($request->id)->delete();
             echo 'success';
         } catch (\Illuminate\Database\QueryException $ex) {
             echo 'error';
@@ -189,40 +199,55 @@ class AdminController extends Controller
     public function postCreateProduct(CreateProduct $request)
     {
 
-
-        try {
-
-            product::create([
-                'product_title' => $request->product_title,
-                'product_alias' => $request->product_alias,
-                'city_id' => $request->city_id,
-                'district_id' => $request->district_id,
-                'type_id' => $request->type_id,
-                'property_id' => $request->property_id,
-                'product_info' => $request->product_info,
-                'product_acreage' => $request->product_acreage,
-                'product_price' => $request->product_price,
-                'product_fast' => $request->product_fast,
-                'product_status' => $request->product_status,
-                'direction_id' => $request->direction_id,
-                'product_address' => $request->product_address,
-                'user_id' => Auth::user()->id,
-            ]);
-            return redirect()->route('product');
-        } catch (\Illuminate\Database\QueryException $ex) {
-            return redirect()->back();
+        $product = product::create([
+            'product_title' => $request->product_title,
+            'district_id' => $request->district_id,
+            'type_id' => $request->type_id,
+            'property_id' => $request->property_id,
+            'product_info' => $request->product_info,
+            'product_acreage' => $request->product_acreage,
+            'product_price' => $request->product_price,
+            'product_fast' => $request->product_fast,
+            'direction_id' => $request->direction_id,
+            'product_address' => $request->product_address,
+            'user_id' => Auth::user()->id,
+        ]);
+        if ($product) {
+            return redirect()->route('product')->with(['message' => 'Đã thêm']);
+        } else {
+            return back()->with(['error' => 'Thêm thất bại']);
         }
     }
 
     public function product(Request $request)
     {
-        $data['product'] = product::paginate(10);
+        $data['city'] = city::all();
+        $data['req_district'] = $request->district;
+        $data['req_property'] = $request->property;
+        $data['property'] = property::all();
+        $product = new product();
+        $url = '';
+        if ($request->district && $request->district != '') {
+
+            $product = $product->where('district_id', '=', $request->district);
+            $url = '&district=' . $request->district;
+        }
+        if ($request->property && $request->property != '') {
+            $product = $product->where('property_id', '=', $request->property);
+            $url = '&property=' . $request->property;
+        }
+        if ($request->search && $request->search != '') {
+            $product = $product->where('product_title', 'like', '%' . $request->search . '%');
+            $url = '&search=' . $request->search;
+        }
+
+        $data['product'] = $product->paginate(20)->withPath($url);
         return view('admin.component.product', $data);
     }
 
     public function image($id)
     {
-        $value = product::find($id)->product_img;
+        $value = product::findOrFail($id)->product_img;
         $data['image'] = array();
         $data['id'] = $id;
         if ($value != '') {
@@ -279,7 +304,7 @@ class AdminController extends Controller
 
     public function editProduct($id)
     {
-        $data['info'] = product::find($id)->with('getDistrict')->first();
+        $data['info'] = product::findOrFail($id);
         $data['city'] = city::all();
         $data['property'] = property::all();
         $data['type'] = type::all();
@@ -291,46 +316,98 @@ class AdminController extends Controller
 
     public function postEditProduct(CreateProduct $request, $id)
     {
-        try {
-            product::find($id)->update([
-                'product_title' => $request->product_title,
-                'product_alias' => $request->product_alias,
-                'city_id' => $request->city_id,
-                'district_id' => $request->district_id,
-                'type_id' => $request->type_id,
-                'property_id' => $request->property_id,
-                'product_info' => $request->product_info,
-                'product_acreage' => $request->product_acreage,
-                'product_price' => $request->product_price,
-                'product_fast' => $request->product_fast,
-                'product_status' => $request->product_status,
-                'direction_id' => $request->direction_id,
-                'product_address' => $request->product_address,
-                'user_id' => Auth::user()->id,
-            ]);
-            return redirect()->route('product')->with(['message' => 'Success!']);
+        $check = product::findOrFail($id)->update([
+            'product_title' => $request->product_title,
 
-        } catch (\Illuminate\Database\QueryException $ex) {
-            return redirect()->back();
+            'product_slug' => null,
+            'district_id' => $request->district_id,
+            'type_id' => $request->type_id,
+            'property_id' => $request->property_id,
+            'product_info' => $request->product_info,
+            'product_acreage' => $request->product_acreage,
+            'product_price' => $request->product_price,
+            'product_fast' => $request->product_fast,
+            'direction_id' => $request->direction_id,
+            'product_address' => $request->product_address,
+            'user_id' => Auth::user()->id,
+        ]);
+        if ($check) {
+            return redirect()->route('product')->with(['message' => 'Đã chỉnh sửa!']);
+        } else {
+            // return back()->with([])
         }
+
+
     }
 
     public function deleteProduct(Request $request)
     {
-        try {
-            $image = json_decode(product::find($request->id)->product_img);
-            if($image!=''){
-                foreach ($image as $key => $val) {
-                    if (file_exists('upload/' . $val)) {
-                        unlink('upload/' . $val);
-                    }
-
-                }
-             }
-            product::find($request->id)->delete();
-            echo 'ok';
-        } catch (\Illuminate\Database\QueryException $ex) {
-            echo 'error';
+        if ($request->action == 1) {
+            $check = product::withTrashed()->findOrFail($request->id)->restore();
+        } else {
+            $check = product::withTrashed()->findOrFail($request->id)->delete();
         }
+        if ($check) {
+            return Response()->json(['message' => 'Đã cập nhật', 'status' => true]);
+        } else {
+            return Response()->json(['message' => 'Cập nhật thất bại', 'status' => true]);
+        }
+    }
+
+    public function getCreateUser()
+    {
+        return view('admin.component.create-user');
+    }
+
+    public function postCreateUser(CreateUserRequest $request)
+    {
+        $name = $request->file('image')->store('avatar', ['disk' => 'public']);
+        $check = User::create([
+            'name' => $request->name,
+            'address' => $request->address,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'sex' => $request->sex,
+            'password' => bcrypt($request->password),
+            'avatar' => $name,
+        ]);
+        if ($check) {
+            return redirect()->route('index')->with(['message' => 'Đã thêm']);
+        } else {
+            return back()->with(['error' => 'Thêm thất bại vui lòng thử lại sau', 'status' => true]);
+        }
+    }
+
+    public function getInfoDistrict(Request $request)
+    {
+        return district::findOrFail($request->id);
+    }
+
+    public function getUser(Request $request)
+    {
+        $data['role'] = roles::all();
+        return view('admin.component.user',$data);
+    }
+
+    public function deleteUser(Request $request)
+    {
+        if ($request->action == 1) {
+            $check = User::withTrashed()->findOrFail($request->id)->restore();
+        } else {
+            $check = User::withTrashed()->findOrFail($request->id)->delete();
+        }
+
+        if ($check) {
+            return Response()->json(['message' => 'Đã xóa', 'status' => true]);
+        } else {
+            return Response()->json(['message' => 'Xóa thất bại vui lòng thử lại sau', 'status' => false]);
+        }
+    }
+    public function postSetRole(Request $request)
+    {
+        User::findOrFail($request->id)->update([
+            'permission'=>json_encode($request->role_alias)
+        ]);
+        return Response::json(['message'=>'Đã cập nhật','status'=>true]);
     }
 }

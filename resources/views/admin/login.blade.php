@@ -28,6 +28,11 @@
             <h3>Admin Panel</h3>
             <form class="m-t" role="form" action="" method="post" enctype='multipart/form-data'>
                 @csrf
+                 @if(Session::has('mess_error'))
+                 <div class="alert alert-danger">
+                    {{ Session::get('mess_error') }}
+                 </div>
+                 @endif
                 <div class="form-group">
                     <input name="email" type="text" class="form-control" placeholder="Email" >
                     <label class="text-danger">{{ $errors->first('email') }}</label>
@@ -36,12 +41,10 @@
                     <input name="password" type="password" class="form-control" placeholder="Password" >
                     <label class="text-danger">{{ $errors->first('password') }}</label>
                 </div>
+                  
+           
                 <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
-                @if(!empty($wrong))
-                <div class="alert alert-danger">
-                {{$wrong}}
-                 </div>
-                 @endif
+             
                 
             </form>
         </div>

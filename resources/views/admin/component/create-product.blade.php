@@ -25,15 +25,9 @@
                                         <p class="text-danger">{{ $errors->first('product_title') }}</p>
                                     </div>
                                     <div class="form-group">
-                                        <label>Alias</label>
-                                        <input type="text" name="product_alias" value="{{old('product_alias')}}"
-                                               placeholder="Nhập alias" class="form-control">
-                                        <p class="text-danger">{{ $errors->first('product_alias') }}</p>
-                                    </div>
-                                    <div class="form-group">
                                         <label>Địa chỉ</label>
                                         <input type="text" name="product_address" value="{{old('product_address')}}"
-                                               placeholder="Nhập alias" class="form-control">
+                                               placeholder="Nhập địa chỉ" class="form-control">
                                         <p class="text-danger">{{ $errors->first('product_address') }}</p>
                                     </div>
                                     <div class="form-group">
@@ -98,7 +92,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Diện tích</label>
-                                    <input type="number" value="{{ old('product_acreage') }}" name="product_acreage" class="form-control" step="0.01">
+                                    <input type="number" value="{{ old('product_acreage') }}" name="product_acreage"
+                                           class="form-control" step="0.01">
                                     <p class="text-danger">{{ $errors->first('product_acreage') }}</p>
                                 </div>
                             </div>
@@ -107,8 +102,8 @@
                                     <label>Giá bán</label>
                                     <div class="input-group m-b">
                                         <input name="product_price" type="number"
-                                                                        value="{{old('product_price')}}"
-                                                                        class="form-control"> <span
+                                               value="{{old('product_price')}}"
+                                               class="form-control"> <span
                                                 class="input-group-addon">đ</span></div>
                                     <p class="text-danger">{{ $errors->first('product_price') }}</p>
                                 </div>
@@ -137,26 +132,6 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Hiển thị</label>
-                            <select name="product_status" class="form-control">
-                                <option {{ (old("product_status") == 1 ? "selected":"") }} value="1">Có</option>
-                                <option {{ (old("product_status") == 0 ? "selected":"") }} value="0">Không
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        {{--<h5>Phân loại</h5>--}}
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="form-group">
                             <label>Hướng</label>
                             <select name="direction_id" class="form-control" id="direction_id">
                                 @forelse($direction as $key => $val)
@@ -166,12 +141,9 @@
                                 @endforelse
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Chọn danh mục</label>
-
-                        </div>
                     </div>
                 </div>
+
 
                 <div class="save">
                     <button type="submit" class="btn btn-primary" style="width: 100%">Lưu <i class="fa fa-check"></i>
@@ -189,7 +161,7 @@
             getDistrict()
         });
 
-        function getDistrict() {
+        function getDistrict(city) {
             var id = $('#city_id').val();
             var str = '';
             $.ajax({
@@ -201,6 +173,7 @@
                 },
                 success: function (response) {
                     response.forEach(function (item) {
+
                         str += `<option value="${item.id}">${item.district_name}</option>`
                     });
                     $('#district_id').html(str)

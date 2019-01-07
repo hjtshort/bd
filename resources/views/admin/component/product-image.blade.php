@@ -45,7 +45,7 @@
 
                         </div>
                         <div class="col-sm-6">
-                            <img id='img-upload'/>
+
 
                         </div>
                         <div class="row">

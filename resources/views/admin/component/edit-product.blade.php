@@ -25,12 +25,6 @@
                                         <p class="text-danger">{{ $errors->first('product_title') }}</p>
                                     </div>
                                     <div class="form-group">
-                                        <label>Alias</label>
-                                        <input type="text" name="product_alias" value="{{ $info->product_alias }}"
-                                               placeholder="Nhập alias" class="form-control">
-                                        <p class="text-danger">{{ $errors->first('product_alias') }}</p>
-                                    </div>
-                                    <div class="form-group">
                                         <label>Địa chỉ</label>
                                         <input type="text" name="product_address" value="{{ $info->product_address }}"
                                                placeholder="Nhập alias" class="form-control">
@@ -140,26 +134,6 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Hiển thị</label>
-                            <select name="product_status" class="form-control">
-                                <option {{ ($info->product_status == 1 ? "selected":"") }} value="1">Có</option>
-                                <option {{ ($info->product_status == 0 ? "selected":"") }} value="0">Không
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        {{--<h5>Phân loại</h5>--}}
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="form-group">
                             <label>Hướng</label>
                             <select name="direction_id" class="form-control" id="direction_id">
                                 @forelse($direction as $key => $val)
@@ -168,10 +142,6 @@
                                     <option value="">Không có dữ liệu</option>
                                 @endforelse
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Chọn danh mục</label>
-
                         </div>
                     </div>
                 </div>

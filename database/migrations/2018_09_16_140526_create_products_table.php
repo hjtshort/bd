@@ -17,7 +17,7 @@ class CreateProductsTable extends Migration
             $table->increments('id');
             $table->string('product_title');
             $table->string('product_address');
-            $table->string('product_alias');
+            $table->string('product_slug')->nullable();
             $table->integer('product_price');
             $table->float('product_acreage');
             $table->text('product_info');
@@ -34,6 +34,7 @@ class CreateProductsTable extends Migration
             $table->foreign('direction_id')->references('id')->on('direction');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }

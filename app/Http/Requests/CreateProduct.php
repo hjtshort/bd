@@ -25,7 +25,6 @@ class CreateProduct extends FormRequest
     {
         return [
             'product_title'=>'required',
-            'product_alias'=>'required',
             'city_id'=>'required',
             'district_id'=>'required',
             'type_id'=>'required',
@@ -33,9 +32,8 @@ class CreateProduct extends FormRequest
             'product_info'=>'required',
             'product_acreage'=>'required|min:1',
             'product_price'=>'required|min:0',
-            'product_fast'=>'required',
             'product_address'=>'required',
-            'product_status'=>'required',
+            'product_fast'=>'required',
             'direction_id'=>'required',
 
         ];

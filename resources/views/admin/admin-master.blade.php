@@ -20,6 +20,7 @@
     <link href="{{ asset('/cpanel/tag/bootstrap-tagsinput-typeahead.css')}}" rel="stylesheet">
     <link href="{{ asset('/cpanel/tag/bootstrap-tagsinput.css')}}" rel="stylesheet">
     <link href="{{ asset('/cpanel/css/style.css')}}" rel="stylesheet">
+    <link href="{{ asset('/cpanel/css/datatables.min.css')}}" rel="stylesheet">
     <style>
     .btn-file {
     position: relative;
@@ -47,10 +48,10 @@
     </style>
 </head>
     <script src="{{ asset('/cpanel/js/jquery.js')}}"></script>
-    
+
 
     <script src="{{ asset('/cpanel/js/bootstrap.min.js')}}"></script>
- 
+
     <script src="{{ asset('/cpanel/js/plugins/metisMenu/jquery.metisMenu.js')}}"></script>
     <script src="{{ asset('/cpanel/js/plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
 
@@ -79,6 +80,8 @@
 
     <script src="{{ asset('/cpanel/tag/bootstrap-tagsinput.js')}}"></script>
     <script src="{{ asset('/cpanel/tag/typeahead.bundle.js')}}"></script>
+    <script src="{{ asset('/cpanel/js/datatables.min.js')}}"></script>
+
     <script>
         function mess(type,mess)
                 {
@@ -102,6 +105,40 @@
                 "hideMethod": "fadeOut"
                 }
             }
+        function getSlug(name,slug)
+        {
+            var str = $(`#${name}`).val();
+            $(`#${slug}`).val(ChangeToSlug(str));
+        }
+        function ChangeToSlug(str)
+        {
+            // Chuyển hết sang chữ thường
+            str = str.toLowerCase();
+
+            // xóa dấu
+            str = str.replace(/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/g, 'a');
+            str = str.replace(/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/g, 'e');
+            str = str.replace(/(ì|í|ị|ỉ|ĩ)/g, 'i');
+            str = str.replace(/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/g, 'o');
+            str = str.replace(/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/g, 'u');
+            str = str.replace(/(ỳ|ý|ỵ|ỷ|ỹ)/g, 'y');
+            str = str.replace(/(đ)/g, 'd');
+
+            // Xóa ký tự đặc biệt
+            str = str.replace(/([^0-9a-z-\s])/g, '');
+
+            // Xóa khoảng trắng thay bằng ký tự -
+            str = str.replace(/(\s+)/g, '-');
+
+            // xóa phần dự - ở đầu
+            str = str.replace(/^-+/g, '');
+
+            // xóa phần dư - ở cuối
+            str = str.replace(/-+$/g, '');
+
+            // return
+            return str;
+        }
     </script>
 <body>
 <div id="wrapper">
@@ -114,8 +151,18 @@
         </div>
 </div>
 </body>
+@if(Session::has('success'))
+    <script>
+        mess('success','{{ Session::get('success') }}')
+    </script>
+@endif
+@if(Session::has('error'))
+    <script>
+        mess('error','{{ Session::get('error') }}')
+    </script>
+@endif
 <script>
-         
+
             $(document).ready( function() {
     	$(document).on('change', '.btn-file :file', function() {
 		var input = $(this),
@@ -124,34 +171,34 @@
 		});
 
 		$('.btn-file :file').on('fileselect', function(event, label) {
-		    
+
 		    var input = $(this).parents('.input-group').find(':text'),
 		        log = label;
-		    
+
 		    if( input.length ) {
 		        input.val(log);
 		    } else {
 		        if( log ) alert(log);
 		    }
-	    
+
 		});
 		function readURL(input) {
 		    if (input.files && input.files[0]) {
 		        var reader = new FileReader();
-		        
+
 		        reader.onload = function (e) {
 		            $('#img-upload').attr('src', e.target.result);
 		        }
-		        
+
 		        reader.readAsDataURL(input.files[0]);
 		    }
 		}
 
 		$("#imgInp").change(function(){
 		    readURL(this);
-		}); 	
+		});
 	});
-    
+
             var hienthi = document.querySelector('.hienthi');
             var switchery = new Switchery(hienthi, { color: '#1AB394' });
 
@@ -172,9 +219,5 @@
                 calendarWeeks: true,
                 autoclose: true
             });
-       
-        
- 
-    
 </script>
 </html>

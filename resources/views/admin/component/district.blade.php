@@ -56,10 +56,10 @@
 
                                 <form id="myForm2" action="" method="post">
                                     @csrf
-                                    <input type="hidden" name="id">
+                                    <input type="hidden" id="idDistrict" name="id">
                                     <div class="form-group">
                                         <label class="label-control">Thành phố</label>
-                                        <select name="city_id" class="form-control" id="select2">
+                                        <select name="city_id" class="form-control" id="city_id">
                                             @forelse($city as $key=>$val)
                                                 <option value="{{ $val->id }}">{{ $val->city_name }}</option>
                                             @empty
@@ -69,7 +69,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="label-control">Quận/huyện</label>
-                                        <input type="text" name="district_name" class="form-control">
+                                        <input type="text" id="district_name" name="district_name" class="form-control">
                                     </div>
                                     <div class="">
                                         <button type="submit" class="btn btn-success">Sửa</button>
@@ -83,88 +83,90 @@
             </div>
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Danh sách thành phố </h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                        </div>
+                    {{--<div class="ibox-content">--}}
+                        {{--<div class="row">--}}
+                            {{--<form id="search_form" action="" method="get">--}}
+                                {{--<div class="col-sm-3 m-b-xs">--}}
+                                    {{--<select id='sl-dm' name='city' class="input-sm form-control input-s-sm inline">--}}
+                                        {{--<option value='' selected>--Chọn thành phố</option>--}}
+                                        {{--@forelse($city as $key=>$val)--}}
+                                            {{--<option @if($val->id==$selectValue) selected--}}
+                                                    {{--@endif value="{{ $val->id }}">{{ $val->city_name }}</option>--}}
+                                        {{--@empty--}}
+                                        {{--@endforelse--}}
+                                    {{--</select>--}}
+                                {{--</div>--}}
+                                {{--<div class="col-sm-6 m-b-xs">--}}
+                                {{--</div>--}}
+                                {{--<div class="col-sm-3">--}}
+
+                                    {{--<div class="input-group"><input id="search" type="text" name="search"--}}
+                                                                    {{--placeholder="Tìm kiếm ..."--}}
+                                                                    {{--class="input-sm form-control"> <span--}}
+                                                {{--class="input-group-btn">--}}
+                              {{--<button id="btn-search" type="submit" class="btn btn-sm btn-primary"><i--}}
+                                          {{--class="fa fa-search"></i></button> </span></div>--}}
+                                {{--</div>--}}
+                            {{--</form>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped table-sanpham">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Quận huyện</th>
+                                <th>Tên thành phố</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="ibox-content">
-                        <div class="row">
-                            <form id="search_form" action="" method="get">
-                            <div class="col-sm-3 m-b-xs">
-                                <select id='sl-dm' name='city' class="input-sm form-control input-s-sm inline">
-                                    <option value='' selected >--Chọn thành phố</option>
-                                    @forelse($city as $key=>$val)
-                                    <option @if($val->id==$selectValue) selected  @endif value="{{ $val->id }}">{{ $val->city_name }}</option>
-                                        @empty
-                                    @endforelse
-                                </select>
-                            </div>
-                            <div class="col-sm-6 m-b-xs">
-                            </div>
-                            <div class="col-sm-3">
+                    <div style="display: flex;justify-content: center;">
+                        <ul class="pagination">
 
-                                    <div class="input-group"><input id="search" type="text" name="search"
-                                                                    placeholder="Tìm kiếm ..."
-                                                                    class="input-sm form-control"> <span
-                                                class="input-group-btn">
-                              <button id="btn-search" type="submit" class="btn btn-sm btn-primary"><i
-                                          class="fa fa-search"></i></button> </span></div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-striped table-sanpham">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Quận huyện</th>
-                                    <th>Tên thành phố</th>
-                                    <th class="text-center">Thao tác</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php $stt = 0; ?>
-                                @forelse($district as $key=>$val)
-                                    <?php $stt++; ?>
-                                    <tr>
-                                        <td>{{ $stt }}</td>
-                                        <td>{{ $val->district_name }}</td>
-                                        <td>
-                                            {{ $val->getCity->city_name }}
-                                        </td>
-
-                                        <td class="text-center">
-
-                                            <span><button class="btn btn-warning"
-                                                          onclick="Edit('{{ $val->id }}','{{ $val->district_name }}',{{ $val->getCity->id }})">Sửa</button></span>
-                                            <span><button class="btn btn-danger delete"
-                                                          onclick="del({{ $val->id }})">Xóa</button></span>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4">Không có dữ liệu</td>
-                                    </tr>
-                                @endforelse
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="display: flex;justify-content: center;">
-                            <ul class="pagination">
-
-                            </ul>
-                        </div>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
     <script>
+        $(function(){
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('getDistrict1') }}',
+                columns: [
+                    { data: 'id', name: 'id' },
+                    {data:'district_name',name:'district_name'},
+                    { data: 'city_name', name: 'city_name' },
+                    { data: 'action', name: 'action' },
+                ]
+
+            });
+        })
+        $('#datatable').on('click','.edit',function(){
+            let id = $(this).attr('data-id');
+            $.ajax({
+                url: '{{ route('getInfoDistrict') }}',
+                type: 'POST',
+                data: {
+                    id:id,
+                    _token:'{{ csrf_token() }}'
+                },
+                success: function (Response) {
+                    $('#idDistrict').val(Response.id);
+                    $('#city_id').val(Response.city_id).change();
+                    $('#district_name').val(Response.district_name);
+                    $('#modalThanhPho_Edit').modal('show');
+                }
+            });
+        })
         $('#btnShowThanhPho').click(function () {
             $('#modalThanhPho').modal('show')
         })
@@ -178,7 +180,8 @@
                 data: data,
                 success: function (response) {
                     if (response == 'success') {
-                        location.reload();
+                        $('#modalThanhPho').modal('toggle');
+                        $('#datatable').DataTable().ajax.reload();
                     } else if (response == 'error') {
                         mess('error', 'Server error!')
                     } else {
@@ -196,34 +199,24 @@
                 type: 'POST',
                 data: data,
                 success: function (response) {
-                    if (response == 'success') {
-                        location.reload();
-                    } else if (response == 'error') {
-                        mess('error', 'Server error!')
+                    console.log(response);
+                   if(response.status){
+                       $('#modalThanhPho_Edit').modal('toggle');
+                       $('#datatable').DataTable().ajax.reload();
+                   }else{
 
-                    } else {
-                        $('#mess_error2').append(`<div class="alert alert-danger">${response}</div>`)
-                    }
+                   }
                 }
             })
 
         })
-
-        function Edit(id, name, city) {
-            $('#myForm2').find('input[name=id]').val(id);
-            $('#myForm2').find('input[name=district_name]').val(name);
-            $('#select2  option[value="' + city + '"]').prop("selected", true);
-
-            $('#modalThanhPho_Edit').modal('show')
-
-        }
-
-        function del(id) {
+        $('#datatable').on('click','.delete',function(){
+            let id = $(this).attr('data-id');
             bootbox.confirm({
                 size: "small",
                 message: "Are you sure?",
                 callback: function (result) {
-                    if(result){
+                    if (result) {
                         $.ajax({
                             url: '{{ route('deleteDistrict') }}',
                             type: 'POST',
@@ -233,7 +226,7 @@
                             },
                             success: function (response) {
                                 if (response == 'success') {
-                                    location.reload()
+                                    $('#datatable').DataTable().ajax.reload();
                                 } else {
                                     mess('error', 'Server error,Try again!')
                                 }
@@ -242,10 +235,8 @@
                     }
                 }
             })
-        }
-        $('#sl-dm').change(function(){
-            $('#search_form').submit()
         })
+
     </script>
 @endsection
 

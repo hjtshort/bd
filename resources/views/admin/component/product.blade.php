@@ -3,12 +3,13 @@
     <div class="wrapper wrapper-content">
         <div class="row">
             <div class="col-lg-12">
-                <a href="{{ route('createProduct') }}" class="btn btn-primary" style="margin-bottom: 15px">Thêm sản phẩm <i class="fa fa-plus"></i></a>
+                <a href="{{ route('createProduct') }}" class="btn btn-primary" style="margin-bottom: 15px">Thêm sản phẩm
+                    <i class="fa fa-plus"></i></a>
             </div>
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Danh sách sản phẩm </h5>
+                        <h5>Danh sách bất động sản </h5>
                         <div class="ibox-tools">
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
@@ -16,77 +17,25 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <div class="row">
-                            <div class="col-sm-3 m-b-xs">
-                                <select id='sl-dm' name='danhmuc' class="input-sm form-control input-s-sm inline">
-                                    <option value=''>--Chọn danh mục sản phẩm</option>
-
-                                    <option selected value=""></option>
-
-                                </select>
-                            </div>
-                            <div class="col-sm-6 m-b-xs">
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="input-group"><input id="search" type="text"
-                                                                placeholder="Tìm kiếm sản phẩm..."
-                                                                class="input-sm form-control"> <span
-                                            class="input-group-btn">
-                              <button id="btn-search" type="button" class="btn btn-sm btn-primary"><i
-                                          class="fa fa-search"></i></button> </span></div>
-                            </div>
-                        </div>
                         <div class="table-responsive">
-                            <table class="table table-striped table-sanpham">
+                            <table id="datatable" class="table table-striped table-sanpham">
                                 <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>id</th>
                                     <th>Tiêu đề</th>
                                     <th>Địa chỉ</th>
                                     <th>Alias</th>
                                     <th>Giá</th>
                                     <th>Diện tích</th>
-                                    <th>Chi tiết</th>
                                     <th>Hình ảnh</th>
                                     <th class="text-center">Thao tác</th>
+                                    <th>Ẩn</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php $stt = 0; ?>
-                                @forelse($product as $key=>$val)
-                                    <?php $stt++ ?>
-                                    <tr>
-                                        <td>{{ $stt }}</td>
-                                        <td>{{ $val->product_title }}</td>
-                                        <td>{{ $val->product_address }}</td>
-                                        <td>{{ $val->product_alias }}</td>
-                                        <td>{{ number_format($val->product_price) }}</td>
-                                        <td>{{ number_format($val->product_acreage) }}</td>
-                                        <td><button class="btn btn-success">Xem</button></td>
-                                        <td>
-                                            <a href="{{ route('image',$val->id) }}"> <img width="40" src="{{ asset('/upload/folder_up.png') }}"
-                                                             alt=""></a>
-
-                                        </td>
-                                        <td class="text-center">
-                                            <span><button class="btn btn-primary"><i
-                                                            class="fa fa-eye"></i></button></span>
-                                            <span><a class="btn btn-warning" href="{{ route('editProduct',$val->id) }}"><i
-                                                            class="fa fa-edit"></i></a></span>
-                                            <span><button onclick="del({{ $val->id }})" class="btn btn-danger delete"><i
-                                                            class="fa fa-trash"></i></button></span>
-                                        </td>
-                                    </tr>
-                                @empty
-                                @endforelse
 
                                 </tbody>
                             </table>
-                        </div>
-                        <div style="display: flex;justify-content: center;">
-                            <ul class="pagination">
-
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -95,7 +44,7 @@
     </div>
     @if(Session::has('message'))
         <script>
-            mess('success', 'Chỉnh sửa thành công!')
+            mess('success', '{{ Session::get('message') }}')
         </script>
     @endif
     @if(Session::has('flash_message'))
@@ -122,31 +71,53 @@
         </script>
     @endif
     <script>
+        $(function(){
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('getDataProduct') }}',
+                columns: [
+                    { data: 'id', name: 'id' },
+                    {data:'product_title',name:'product_title'},
+                    { data: 'product_slug', name: 'product_slug' },
+                    { data: 'product_address', name: 'product_address' },
+                    { data: 'product_price', name: 'product_price' },
+                    { data: 'product_acreage', name: 'product_acreage' },
+                    { data: 'image', name: 'image' },
+                    { data: 'action', name: 'action' },
+                    { data: 'delete', name: 'delete' },
+                ]
 
-        function del(id)
-        {
-            var token = $('meta[name=csrf-token]').attr("content");
-            bootbox.confirm("Bạn có muốn xóa các sản phẩm đã chọn!", function (result) {
-                if (result) {
-                    $.ajax({
-                        type: "post",
-                        url: "{{ route('deleteProduct') }}",
-                        data: {
-                            "id": id,
-                            '_token': token
-                        },
-                        success: function (response) {
-                            if (response == 'ok') {
-                                location.reload()
-                            }else{
-                                console.log(response)
-                            }
-                        }
-                    });
-                }
             });
-        }
+            $('#datatable').on('click','.delete',function(){
+                let id = $(this).val();
+                var action = '';
+                if($(this).is(':checked')){
+                    action = 1;
+                }else{
+                    action = 0;
+                }
+                $.ajax({
+                    url: '{{ route('deleteProduct') }}',
+                    type: 'POST',
+                    data: {
+                        _token:'{{ csrf_token() }}',
+                        id:id,
+                        action:action,
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if(response.status){
+                            mess('success',response.message)
+                            $('#datatable').DataTable().ajax.reload();
+                        }else{
+                            mess('error',response.message)
+                        }
+                    }
+                });
+            })
+        })
+
     </script>
 
 @endsection
-
