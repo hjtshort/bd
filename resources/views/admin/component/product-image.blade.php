@@ -76,7 +76,7 @@
                                                             <button onclick="del_img({{ $id }},'{{ $value }}')" class="btn btn-danger">x</button>
                                                         </div>
                                                         <div class="panel-body">
-                                                            <img style="width: 100%" src="{{ asset('/upload/'.$value) }}"
+                                                            <img style="width: 100%" src="{{ \Illuminate\Support\Facades\Storage::url($value) }}"
                                                                  alt="">
                                                         </div>
 

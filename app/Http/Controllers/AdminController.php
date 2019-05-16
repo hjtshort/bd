@@ -32,7 +32,7 @@ class AdminController extends Controller
 
     public function postLogin(AdminRequest $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password],false)) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], false)) {
             return redirect()->route('index');
         } else
             return redirect()->back()->with(['mess_error' => 'Email hoặc mật khẩu không đúng!']);
@@ -252,7 +252,6 @@ class AdminController extends Controller
         $data['id'] = $id;
         if ($value != '') {
             $data['image'] = json_decode($value);
-
         }
 
         return view('admin.component.product-image', $data);
@@ -263,13 +262,11 @@ class AdminController extends Controller
         if (!is_dir('upload')) {
             mkdir('upload', 0777);
         }
-        $file = $request->file('image');
-        $name = rand(11111, 99999) . '.' . $file->getClientOriginalName();
-        $file->move('upload', $name);
+        $file = $request->file('image')->store('product', 'public');
         $up = product::find($id);
         $image = json_decode($up->product_img);
-        $image[] = $name;
-        product::find($id)->update([
+        $image[] = $file;
+        $up->update([
             'product_img' => json_encode($image),
         ]);
         return redirect()->back()->with(['message' => 'Thêm thành công!']);
@@ -386,7 +383,7 @@ class AdminController extends Controller
     public function getUser(Request $request)
     {
         $data['role'] = roles::all();
-        return view('admin.component.user',$data);
+        return view('admin.component.user', $data);
     }
 
     public function deleteUser(Request $request)
@@ -403,11 +400,12 @@ class AdminController extends Controller
             return Response()->json(['message' => 'Xóa thất bại vui lòng thử lại sau', 'status' => false]);
         }
     }
+
     public function postSetRole(Request $request)
     {
         User::findOrFail($request->id)->update([
-            'permission'=>json_encode($request->role_alias)
+            'permission' => json_encode($request->role_alias)
         ]);
-        return Response::json(['message'=>'Đã cập nhật','status'=>true]);
+        return Response::json(['message' => 'Đã cập nhật', 'status' => true]);
     }
 }

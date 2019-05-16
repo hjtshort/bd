@@ -13,21 +13,16 @@
                 </nav>
                 <h1>Bán gấp nhà phố mặt tiền khu Dân cư An Phú Hưng quận 7.</h1>
                 <div class="slider">
+                    @php
+                        $arrayImage = json_decode($product_img);
+                    @endphp
+                    @foreach($arrayImage as $value)
                     <div>
                         <a href="#">
-                            <img src="assets/images/slider.jpg" alt="slider" style="width: 100%">
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($value) }}" alt="slider" style="width: 100%">
                         </a>
                     </div>
-                    <div>
-                        <a href="#">
-                            <img src="assets/images/slider.jpg" alt="slider" style="width: 100%">
-                        </a>
-                    </div>
-                    <div>
-                        <a href="#">
-                            <img src="assets/images/slider.jpg" alt="slider" style="width: 100%">
-                        </a>
-                    </div>
+                        @endforeach
                 </div>
                 <div class="detail">
                     <div class="detail-title">
@@ -35,23 +30,14 @@
                     </div>
                     <div class="detail-content">
                         <ul class="p-1">
-                            <li><strong>Diện tích: </strong>4x18m (72m<sup>2</sup>). diện tích xây
-                                dựng:&nbsp;&nbsp;192,85 m2&nbsp;</li>
-                            <li><strong>Hiện trạng: </strong>khu dân cư cao cấp, nhà 1 trệt 3 lầu, sân thượng lớn,
-                                thoáng mát. Thiết kế tiện nghi: 1 phòng khách, bếp phòng ăn, có 4 phòng ngủ,6wc, sân
-                                thượng trước sau,, phòng thờ, nội thất cao cấp, sang trọng.</li>
-                            <li><strong>Vị trí: </strong>khung cảnh nhà đẹp, đối diện công viên, gần đường lớn, giao
-                                thông thuận tiện, gần công viên bờ sông, cách Nguyễn Thị Thập 200m. Phù hợp để ở, làm
-                                văn phòng công ty hoặc đầu tư kinh doanh cho thuê.</li>
-                            <li><strong>Tiện ích: </strong>khu dân trí cao, an ninh tốt, chuẩn hạ tầng, đầy đủ tiện
-                                ích: &nbsp;trung tâm mua sắm, trường tiểu học, trường mầm non song ngữ, cửa hàng tiện
-                                ích, khu vui chơi giải trí,…</li>
+                            {!! $product_info !!}
                         </ul>
                     </div>
                 </div>
                 <div class="map p-0">
-                    <iframe src="https://www.google.com/maps/embed?pb" width="100%" height="450" frameborder="0" style="border:0"
-                        allowfullscreen></iframe>
+                    <div id="map">
+
+                    </div>
                 </div>
                 <div class="related">
                     <div class="related-title">
@@ -437,4 +423,10 @@
         </div>
     </div>
 </div>
+<script type="text/javascript"
+        src='https://maps.google.com/maps/api/js?key=AIzaSyCDfOZA-NkwPz2yuKnSkcC5RUoBHa1MpQo&sensor=false&libraries=places'></script>
+<script src="{{ asset('/assets/js/locationpicker.jquery.js') }}"></script>
+<script>
+    $("#map").locationpicker();
+</script>
 @endsection

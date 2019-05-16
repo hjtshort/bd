@@ -34,7 +34,9 @@ class CreateProductsTable extends Migration
             $table->foreign('direction_id')->references('id')->on('direction');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->timestamp('deleted_at')->nullable();
+            $table->dateTime('deleted_at')->nullable();
+            $table->string('lon')->default(1);
+            $table->string('lat')->default(1);
             $table->timestamps();
         });
     }

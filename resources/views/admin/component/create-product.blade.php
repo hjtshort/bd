@@ -92,8 +92,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Diện tích</label>
-                                    <input type="number" value="{{ old('product_acreage') }}" name="product_acreage"
-                                           class="form-control" step="0.01">
+                                    <input type="text" value="{{ old('product_acreage') }}" name="product_acreage"
+                                           class="form-control">
                                     <p class="text-danger">{{ $errors->first('product_acreage') }}</p>
                                 </div>
                             </div>

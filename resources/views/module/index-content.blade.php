@@ -35,8 +35,11 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <select name="" id="" class="form-control">
-                                            <option value="">Hướng nhà</option>
+                                        <select name="direction" id="direction" class="form-control">
+                                            <option value="">Tất cả hướng</option>
+                                            @foreach($direction as $value)
+                                                <option value="{{ $value->id }}">{{ $value->direction_name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -46,24 +49,33 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <select name="" id="" class="form-control">
-                                            <option value="">Bất động sản</option>
+                                        <select name="" id="property" class="form-control">
+                                            <option value="">Tất cả bất động sản</option>
+                                            @foreach($property as $val)
+                                                <option value="{{ $val->id }}"> {{ $val->property_name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <select name="" id="" class="form-control">
-                                            <option value="">Tỉnh/Thành phố</option>
+                                        <select name="" id="type" class="form-control">
+                                            <option value="">Tất cả tỉnh thành</option>
+                                            @foreach($city as $value)
+                                                <option value="{{ $value->id }}">{{ $value->city_name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <select name="" id="" class="form-control">
-                                            <option value="">Giá nhà</option>
+                                            <option value="">Tất cả loại</option>
+                                            @foreach($type as $value)
+                                                <option value="{{ $value->id }}">{{ $value->type_name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <select name="" id="" class="form-control">
+                                        <select name="" id="district" class="form-control">
                                             <option value="">Quận/Huyện</option>
                                         </select>
                                     </div>
@@ -77,29 +89,35 @@
         <div class="container pt-3">
             <div class="row">
                 <div class="col-lg-9">
-                    <h2>Tổng số bất động sản mua bán nhà đất quận 7: 7363</h2>
-                    <div class="d-flex align-items-center justify-content-end pb-3">
-                        <span class="mr-2">Sắp xếp: </span>
-                        <form action="">
-                            <select name="" id="" class="form-control">
-                                <option value="">Tin mới nhất</option>
-                            </select>
-                        </form>
-                    </div>
+                    <h2>Tổng số bất động sản mua bán nhà đất : {{ $countAll }}</h2>
+    {{--                    <div class="d-flex align-items-center justify-content-end pb-3">--}}
+    {{--                        <span class="mr-2">Sắp xếp: </span>--}}
+    {{--                        <form action="">--}}
+    {{--                            <select name="" id="" class="form-control">--}}
+    {{--                                <option value="">Tin mới nhất</option>--}}
+    {{--                            </select>--}}
+    {{--                        </form>--}}
+    {{--                    </div>--}}
                     <div class="row">
+                        @foreach($product as $key => $value)
+                            @php
+                                $avatar = json_decode($value->product_img)[0];
+                            @endphp
                         <div class="col-6 col-lg-3">
                             <div class="card card-product">
                                 <div class="card-header bg-main p-1">
-                                    <h5 class="text-white m-0">Bán gấp nhà lầu hẻm...</h5>
+                                    <h5 class="text-white m-0"></h5>
                                 </div>
                                 <div class="card-body p-1">
                                     <a href="">
                                         <div class="image">
-                                            <img class="card-img-top" src="assets/images/product.jpg"
-                                                 alt="Bán gấp nhà lầu hẻm...">
+                                            <img class="card-img-top" src="{{ \Illuminate\Support\Facades\Storage::url($avatar) }}"
+                                                 alt="{{ $value->product_title }}">
                                             <div class="badge-product daidien">Đại diện</div>
-                                            <div class="badge-product ban">Bán</div>
+                                            <div class="badge-product ban">{{ $value->property_name }}</div>
+                                            @if($value->product_fast == 1)
                                             <div class="bangap">Bán gấp</div>
+                                                @endif
                                         </div>
                                     </a>
                                     <div class="box-info address">
@@ -107,306 +125,27 @@
                                     </div>
                                     <div class="box-info">
                                         <span>Loại</span>
-                                        <span>Nhà Hẻm</span>
+                                        <span>{{ $value->type_name }}</span>
                                     </div>
                                     <div class="box-info">
                                         <span>Diện tích</span>
-                                        <span>5x6 m<sup>2</sup></span>
+                                        <span>{{ $value->product_acreage }} m<sup>2</sup></span>
                                     </div>
                                     <div class="box-info">
                                         <span>Giá bán</span>
                                         <span>
                                         <span class="price">
-                                            2.55 tỷ
+                                            {{ \App\Helpers\PrintPrice::print($value->product_price) }}
                                         </span>
                                     </span>
                                     </div>
-                                    <p><i>Bán nhà 1 lầu hẻm 54 Lê Văn Lương phường Tân Hưng Quận 7</i></p>
-                                    <button class="btn btn-main mb-3">Chi tiết</button>
-                                    <span class="date"><i class="fe fe-clock"></i> 12-09-2018</span>
+                                    <p><i>{{ $value->product_address }}</i></p>
+                                    <a href="{{ route('detail',$value->product_slug) }}" class="btn btn-main mb-3">Chi tiết</a>
+                                    <span class="date"><i class="fe fe-clock"></i> {{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y') }}</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="card card-product">
-                                <div class="card-header bg-main p-1">
-                                    <h5 class="text-white m-0">Bán gấp nhà lầu hẻm...</h5>
-                                </div>
-                                <div class="card-body p-1">
-                                    <a href="">
-                                        <div class="image">
-                                            <img class="card-img-top" src="assets/images/product.jpg"
-                                                 alt="Bán gấp nhà lầu hẻm...">
-                                            <div class="badge-product daidien">Đại diện</div>
-                                            <div class="badge-product ban">Bán</div>
-                                            <div class="bangap">Bán gấp</div>
-                                        </div>
-                                    </a>
-                                    <div class="box-info address">
-                                        <strong>Lê Văn Lương, Quận 7</strong>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Loại</span>
-                                        <span>Nhà Hẻm</span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Diện tích</span>
-                                        <span>5x6 m<sup>2</sup></span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Giá bán</span>
-                                        <span>
-                                        <span class="price">
-                                            2.55 tỷ
-                                        </span>
-                                    </span>
-                                    </div>
-                                    <p><i>Bán nhà 1 lầu hẻm 54 Lê Văn Lương phường Tân Hưng Quận 7</i></p>
-                                    <button class="btn btn-main mb-3">Chi tiết</button>
-                                    <span class="date"><i class="fe fe-clock"></i> 12-09-2018</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="card card-product">
-                                <div class="card-header bg-main p-1">
-                                    <h5 class="text-white m-0">Bán gấp nhà lầu hẻm...</h5>
-                                </div>
-                                <div class="card-body p-1">
-                                    <a href="">
-                                        <div class="image">
-                                            <img class="card-img-top" src="assets/images/product.jpg"
-                                                 alt="Bán gấp nhà lầu hẻm...">
-                                            <div class="badge-product daidien">Đại diện</div>
-                                            <div class="badge-product ban">Bán</div>
-                                            <div class="bangap">Bán gấp</div>
-                                        </div>
-                                    </a>
-                                    <div class="box-info address">
-                                        <strong>Lê Văn Lương, Quận 7</strong>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Loại</span>
-                                        <span>Nhà Hẻm</span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Diện tích</span>
-                                        <span>5x6 m<sup>2</sup></span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Giá bán</span>
-                                        <span>
-                                        <span class="price">
-                                            2.55 tỷ
-                                        </span>
-                                    </span>
-                                    </div>
-                                    <p><i>Bán nhà 1 lầu hẻm 54 Lê Văn Lương phường Tân Hưng Quận 7</i></p>
-                                    <button class="btn btn-main mb-3">Chi tiết</button>
-                                    <span class="date"><i class="fe fe-clock"></i> 12-09-2018</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="card card-product">
-                                <div class="card-header bg-main p-1">
-                                    <h5 class="text-white m-0">Bán gấp nhà lầu hẻm...</h5>
-                                </div>
-                                <div class="card-body p-1">
-                                    <a href="">
-                                        <div class="image">
-                                            <img class="card-img-top" src="assets/images/product.jpg"
-                                                 alt="Bán gấp nhà lầu hẻm...">
-                                            <div class="badge-product daidien">Đại diện</div>
-                                            <div class="badge-product ban">Bán</div>
-                                            <div class="bangap">Bán gấp</div>
-                                        </div>
-                                    </a>
-                                    <div class="box-info address">
-                                        <strong>Lê Văn Lương, Quận 7</strong>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Loại</span>
-                                        <span>Nhà Hẻm</span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Diện tích</span>
-                                        <span>5x6 m<sup>2</sup></span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Giá bán</span>
-                                        <span>
-                                        <span class="price">
-                                            2.55 tỷ
-                                        </span>
-                                    </span>
-                                    </div>
-                                    <p><i>Bán nhà 1 lầu hẻm 54 Lê Văn Lương phường Tân Hưng Quận 7</i></p>
-                                    <button class="btn btn-main mb-3">Chi tiết</button>
-                                    <span class="date"><i class="fe fe-clock"></i> 12-09-2018</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="card card-product">
-                                <div class="card-header bg-main p-1">
-                                    <h5 class="text-white m-0">Bán gấp nhà lầu hẻm...</h5>
-                                </div>
-                                <div class="card-body p-1">
-                                    <a href="">
-                                        <div class="image">
-                                            <img class="card-img-top" src="assets/images/product.jpg"
-                                                 alt="Bán gấp nhà lầu hẻm...">
-                                            <div class="badge-product daidien">Đại diện</div>
-                                            <div class="badge-product ban">Bán</div>
-                                            <div class="bangap">Bán gấp</div>
-                                        </div>
-                                    </a>
-                                    <div class="box-info address">
-                                        <strong>Lê Văn Lương, Quận 7</strong>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Loại</span>
-                                        <span>Nhà Hẻm</span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Diện tích</span>
-                                        <span>5x6 m<sup>2</sup></span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Giá bán</span>
-                                        <span>
-                                        <span class="price">
-                                            2.55 tỷ
-                                        </span>
-                                    </span>
-                                    </div>
-                                    <p><i>Bán nhà 1 lầu hẻm 54 Lê Văn Lương phường Tân Hưng Quận 7</i></p>
-                                    <button class="btn btn-main mb-3">Chi tiết</button>
-                                    <span class="date"><i class="fe fe-clock"></i> 12-09-2018</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="card card-product">
-                                <div class="card-header bg-main p-1">
-                                    <h5 class="text-white m-0">Bán gấp nhà lầu hẻm...</h5>
-                                </div>
-                                <div class="card-body p-1">
-                                    <a href="">
-                                        <div class="image">
-                                            <img class="card-img-top" src="assets/images/product.jpg"
-                                                 alt="Bán gấp nhà lầu hẻm...">
-                                            <div class="badge-product daidien">Đại diện</div>
-                                            <div class="badge-product ban">Bán</div>
-                                            <div class="bangap">Bán gấp</div>
-                                        </div>
-                                    </a>
-                                    <div class="box-info address">
-                                        <strong>Lê Văn Lương, Quận 7</strong>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Loại</span>
-                                        <span>Nhà Hẻm</span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Diện tích</span>
-                                        <span>5x6 m<sup>2</sup></span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Giá bán</span>
-                                        <span>
-                                        <span class="price">
-                                            2.55 tỷ
-                                        </span>
-                                    </span>
-                                    </div>
-                                    <p><i>Bán nhà 1 lầu hẻm 54 Lê Văn Lương phường Tân Hưng Quận 7</i></p>
-                                    <button class="btn btn-main mb-3">Chi tiết</button>
-                                    <span class="date"><i class="fe fe-clock"></i> 12-09-2018</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="card card-product">
-                                <div class="card-header bg-main p-1">
-                                    <h5 class="text-white m-0">Bán gấp nhà lầu hẻm...</h5>
-                                </div>
-                                <div class="card-body p-1">
-                                    <a href="">
-                                        <div class="image">
-                                            <img class="card-img-top" src="assets/images/product.jpg"
-                                                 alt="Bán gấp nhà lầu hẻm...">
-                                            <div class="badge-product daidien">Đại diện</div>
-                                            <div class="badge-product ban">Bán</div>
-                                            <div class="bangap">Bán gấp</div>
-                                        </div>
-                                    </a>
-                                    <div class="box-info address">
-                                        <strong>Lê Văn Lương, Quận 7</strong>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Loại</span>
-                                        <span>Nhà Hẻm</span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Diện tích</span>
-                                        <span>5x6 m<sup>2</sup></span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Giá bán</span>
-                                        <span>
-                                        <span class="price">
-                                            2.55 tỷ
-                                        </span>
-                                    </span>
-                                    </div>
-                                    <p><i>Bán nhà 1 lầu hẻm 54 Lê Văn Lương phường Tân Hưng Quận 7</i></p>
-                                    <button class="btn btn-main mb-3">Chi tiết</button>
-                                    <span class="date"><i class="fe fe-clock"></i> 12-09-2018</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="card card-product">
-                                <div class="card-header bg-main p-1">
-                                    <h5 class="text-white m-0">Bán gấp nhà lầu hẻm...</h5>
-                                </div>
-                                <div class="card-body p-1">
-                                    <a href="">
-                                        <div class="image">
-                                            <img class="card-img-top" src="assets/images/product.jpg"
-                                                 alt="Bán gấp nhà lầu hẻm...">
-                                            <div class="badge-product daidien">Đại diện</div>
-                                            <div class="badge-product ban">Bán</div>
-                                            <div class="bangap">Bán gấp</div>
-                                        </div>
-                                    </a>
-                                    <div class="box-info address">
-                                        <strong>Lê Văn Lương, Quận 7</strong>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Loại</span>
-                                        <span>Nhà Hẻm</span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Diện tích</span>
-                                        <span>5x6 m<sup>2</sup></span>
-                                    </div>
-                                    <div class="box-info">
-                                        <span>Giá bán</span>
-                                        <span>
-                                        <span class="price">
-                                            2.55 tỷ
-                                        </span>
-                                    </span>
-                                    </div>
-                                    <p><i>Bán nhà 1 lầu hẻm 54 Lê Văn Lương phường Tân Hưng Quận 7</i></p>
-                                    <button class="btn btn-main mb-3">Chi tiết</button>
-                                    <span class="date"><i class="fe fe-clock"></i> 12-09-2018</span>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
                 <div class="col-lg-3">

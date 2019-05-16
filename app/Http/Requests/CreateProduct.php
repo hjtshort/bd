@@ -30,7 +30,7 @@ class CreateProduct extends FormRequest
             'type_id'=>'required',
             'property_id'=>'required',
             'product_info'=>'required',
-            'product_acreage'=>'required|min:1',
+            'product_acreage'=>'required',
             'product_price'=>'required|min:0',
             'product_address'=>'required',
             'product_fast'=>'required',

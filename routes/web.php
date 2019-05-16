@@ -11,18 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    // return \App\models\type::all();
-    return view('module.index-content');
-});
+Route::get('/', 'IndexController@index')->name('index');
 Route::get('/danhmuc', function () {
     // return \App\models\type::all();
     return view('module.danhmuc');
 });
-Route::get('/chitiet', function () {
-    // return \App\models\type::all();
-    return view('module.chitiet');
-});
+Route::get('chi-tiet/{slug}', 'IndexController@detail')->name('detail');
 Route::get('/lienhe', function () {
     // return \App\models\type::all();
     return view('module.lienhe');
